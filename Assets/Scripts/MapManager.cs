@@ -16,6 +16,7 @@ namespace Silly
         BuildingLand = 4, //181,230,29
         DefenseBuilding = 5, // 255,242,0
 
+
         Build = 6,              // 지어진 상태
         Monster = 7,
     }
@@ -24,6 +25,7 @@ namespace Silly
     public class MapData{
         public BlockName blockName;
         public int x;
+
         public int z;
 
         public MapData(int x, int z)
@@ -55,11 +57,13 @@ namespace Silly
         {
             return 0;
         }
+
     }
 
 
     public class MapManager : MonoBehaviour
     {
+        List<MapData> mapDatas = new List<MapData>();
         public Texture2D MapInfo;
         public Color[] ColorBlock;
 
