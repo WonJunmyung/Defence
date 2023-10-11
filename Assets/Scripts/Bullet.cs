@@ -19,7 +19,14 @@ namespace Silly
         // Update is called once per frame
         void Update()
         {
-            this.transform.position = Vector3.MoveTowards(this.transform.position, Target.GetChild(0).transform.position, Time.deltaTime * speed);
+            if (Target != null)
+            {
+                this.transform.position = Vector3.MoveTowards(this.transform.position, Target.GetChild(0).transform.position, Time.deltaTime * speed);
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
         }
 
         //private void OnTriggerEnter(Collider other)

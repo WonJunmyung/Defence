@@ -32,7 +32,6 @@ namespace Silly
         {
             if (other.name.Contains("Bullet"))
             {
-                Debug.Log("데미지 받음");
                 hp -= other.GetComponent<Bullet>().AttackDamage;
                 Destroy(other.gameObject);
                 if (hp <= 0)

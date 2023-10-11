@@ -149,9 +149,23 @@ namespace Silly
             }
         }
 
+        public void ChangeBuild(int x, int z, int size, BlockName blockName)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    int posX = x + i;
+                    int posZ = z + j;
+                    
+                    GetMapData(posX, posZ).blockName = blockName;
+                    
+                }
+            }
+        }
+
         public bool isBuilding(int x, int z, int size)
         {
-
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++)
                 {
@@ -168,7 +182,7 @@ namespace Silly
                     }
                 }
             }
-            //Debug.LogError("!!!!");
+            
             return true;
         }
 

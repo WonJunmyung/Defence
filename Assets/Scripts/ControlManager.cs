@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Silly
 {
@@ -46,7 +47,7 @@ namespace Silly
                         if (isBuilding)
                         {
                             currentTower.SetActive(true);
-                            currentTower.transform.position = new Vector3(posX, 1, posZ);
+                            currentTower.transform.position = new Vector3(posX, 0.2f, posZ);
                             ErrorNum = -1;
                         }
                         else
@@ -64,16 +65,23 @@ namespace Silly
 
                 }
             }
-            if (Input.GetMouseButtonDown(0))
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
-                if(ErrorNum != -1)
+                if (Input.GetMouseButtonDown(0))
                 {
-                    errorManager.SetMessage(ErrorNum);
-                    
-                }
-                else
-                {
-                    currentTower = null;
+                    if (ErrorNum != -1)
+                    {
+                        errorManager.SetMessage(ErrorNum);
+
+                    }
+                    else
+                    {
+                        mapManager.ChangeBuild((int)currentTower.transform.position.x, (int)currentTower.transform.position.z, buildingSize, BlockName.Build);
+
+                        currentTower = null;
+
+
+                    }
                 }
             }
         }

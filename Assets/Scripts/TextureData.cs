@@ -14,11 +14,14 @@ namespace Silly
         Mesh mesh;
         int imageNum = 6;
         float textureSize;
+
+        public Texture2D blockTexture;
+        public List<Texture2D> textures = new List<Texture2D>();
+        int textureNum = 0;
         // Start is called before the first frame update
         void Start()
         {
-            textureSize = 1/imageNum;
-            SetGlassTexture();
+            SplitTexture();
         }
 
         // Update is called once per frame
@@ -27,40 +30,46 @@ namespace Silly
         
         }
 
-        void SetGlassTexture()
+        public void SplitTexture()
         {
-            glassTexture = new Texture2D(16, 16);
-            for(int j=0; j<glassTexture.height; j++)
+            //5~35 , 40
+            int left = 4;
+            int top = 4;
+            int interval = 4;
+
+            int width = 32;
+            int height = 32;
+            int textureWidthNum = 7;
+            int textureheightNum = 6;
+            int textureTotalNum = 40;
+
+            Color[] tempColor = null;
+            int count = 0;
+            for (int j = 0; j < textureheightNum; j++)
             {
-                for(int i=0; i<glassTexture.width; i++)
+                for (int i = 0; i < textureWidthNum; i++)
                 {
-                    glassTexture.SetPixel(i, j, new Color(0, Random.value, 0));
-                    if (j < 3)
+                    if(count >= 40)
                     {
-                        glassTexture.SetPixel(i, j, new Color(0, Random.value, 0));
+                        break;
                     }
-                    else if (j == 4)
-                    {
-                        if (Random.value > 0.5)
-                        {
-                            glassTexture.SetPixel(i, j, new Color(0, Random.value, 0));
-                        }
-                        else
-                        {
-                            glassTexture.SetPixel(i, j, new Color(Random.value / 2, Random.value / 2, 0));
-                        }
-                    }
-                    else
-                    {
-                        glassTexture.SetPixel(i, j, new Color(Random.value / 2, Random.value / 2, 0));
-                    }
+                    tempColor = blockTexture.GetPixels(left + (i * interval) + (i * width),
+                        (blockTexture.height) - top -
+                        (height * (j+1)) - (j*interval), width, height);
+                    Texture2D temp = new Texture2D(width, height);
+                    temp.SetPixels(tempColor);
+                    temp.Apply();
+                    textures.Add(temp);
+                    count++;
                 }
             }
-            glassMat = new Material(Shader.Find("Standard"));
-            glassMat.mainTexture = glassTexture;
         }
-        
-
+        public void ChangeTexture()
+        {
+            textureNum++;
+            this.GetComponent<Renderer>().material.mainTexture = textures[textureNum];
+            
+        }
 
     }
 }

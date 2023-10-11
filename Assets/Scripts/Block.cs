@@ -26,6 +26,7 @@ namespace Silly
         void Start()
         {
             CreateMesh();
+            //this.GetComponent<TextureData>().SetGlassTexture();
         }
 
         private void CreateMesh()

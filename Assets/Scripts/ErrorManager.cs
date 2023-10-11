@@ -11,7 +11,8 @@ namespace Silly
         public Text Error;
         string[] messageArray = new string[] {
             "건설할 수 없는 구역입니다.",
-            ""
+            "",
+            "아직 웨이브가 끝나지 않았습니다."
             };
 
         // Start is called before the first frame update

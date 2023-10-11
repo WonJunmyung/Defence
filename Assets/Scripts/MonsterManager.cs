@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Silly
 {
@@ -11,19 +12,19 @@ namespace Silly
         [SerializeField]
         private int Wave = 0;
         [SerializeField]
-        private int TotalWave = 4;
-        
-        [SerializeField]
-        private float[] responseTime = new float[]
-        {
-            5.0f, 4.5f, 4.0f, 3.5f, 3.0f,
-        };
+        private int TotalWave = 5;
 
         [SerializeField]
-        private int[] responseCount = new int[]
-        {
-            2, 3, 4, 5, 6
-        };
+        private float responseTime = 10.0f;
+        [SerializeField]
+        float startTime = 10.0f;
+        [SerializeField]
+        float time = 0;
+        [SerializeField]
+        bool isTime = true;
+        
+        ErrorManager errorManager;
+
 
         
         public List<Monster> monsters = new List<Monster>();
@@ -32,19 +33,53 @@ namespace Silly
         public List<FindPathAStar> findPathAStars = new List<FindPathAStar>();
         bool isMove = false;
 
+        public Text waveTime;
+
+
+
         // Start is called before the first frame update
         void Start()
         {
             mapManager = this.GetComponent<MapManager>();
+            errorManager = this.GetComponent<ErrorManager>();
+            for (int i = 0; i < mapManager.mapData.Count; i++)
+            {
+                if (mapManager.mapData[i].blockName == BlockName.Response)
+                {
+                    responseMap.Add(mapManager.mapData[i]);
+                }
+                if (mapManager.mapData[i].blockName == BlockName.DefenseBuilding)
+                {
+                    destination.Add(mapManager.mapData[i]);
+                }
+            }
         }
 
         // Update is called once per frame
         void Update()
         {
+
+            if (isTime)
+            {
+                if (time < startTime)
+                {
+                    time += Time.deltaTime;
+
+                }
+                else
+                {
+                    isTime = false;
+                    CreateMonster();
+                    
+                }
+                waveTime.text = Mathf.CeilToInt(startTime - time).ToString();
+            }
+
             if (isMove)
             {
                 for (int i = 0; i < monsters.Count; i++)
                 {
+                    
                     if (findPathAStars[i].isMove)
                     {
                         if (monsters[i].GetComponent<FindPathAStar>().movePath.Count > 0)
@@ -60,6 +95,7 @@ namespace Silly
                                         if (Vector3.Distance(monsters[j].transform.position, findPathAStars[i].movePath[0]) < 1.0f)
                                         {
                                             moving = false;
+                                            
                                             break;
                                         }
                                     }
@@ -82,32 +118,42 @@ namespace Silly
                                 monsters[i].x = (int)findPathAStars[i].movePath[0].x;
                                 monsters[i].z = (int)findPathAStars[i].movePath[0].z;
                                 findPathAStars[i].movePath.RemoveAt(0);
+                                if(findPathAStars[i].movePath.Count > 0)
+                                {
+                                    Vector3 temp = new Vector3(findPathAStars[i].movePath[0].x + 0.5f, monsters[i].transform.GetChild(0).position.y, findPathAStars[i].movePath[0].z + 0.5f);
+                                    monsters[i].transform.GetChild(0).transform.LookAt(temp);
+                                }
                             }
                         }
                         else
                         {
                             monsters[i].GetComponent<FindPathAStar>().isMove = false;
+                            Vector3 temp = new Vector3(destination[0].x + 0.5f, monsters[i].transform.GetChild(0).position.y, destination[0].z + 0.5f);
+                            monsters[i].transform.GetChild(0).transform.LookAt(temp);
                         }
                     }
                 }
+                
+
+            }
+        }
+
+        public void BtnWave()
+        {
+            if (monsters.Count == 0) { 
+                isTime = false;
+                CreateMonster();
+                waveTime.text = Mathf.CeilToInt(0).ToString();
+                startTime = 60.0f;
+            }
+            else
+            {
+                errorManager.SetMessage(2);
             }
         }
 
         public void CreateMonster()
         {
-            
-            for(int i=0; i<mapManager.mapData.Count; i++)
-            {
-                if (mapManager.mapData[i].blockName == BlockName.Response)
-                {
-                    responseMap.Add(mapManager.mapData[i]);
-                }
-                if (mapManager.mapData[i].blockName == BlockName.DefenseBuilding)
-                {
-                    destination.Add(mapManager.mapData[i]);
-                }
-            }
-
 
             for (int i = 0; i < responseMap.Count; i++)
             {
@@ -116,7 +162,9 @@ namespace Silly
                 temp.x = responseMap[i].x;
                 temp.z = responseMap[i].z;
                 monsters.Add(temp);
+                // 생성 위치 몬스터로
             }
+                
             MonsterMove();
         }
 
@@ -166,11 +214,13 @@ namespace Silly
 
         public void DestoryMonster(Monster mon)
         {
-            int num = monsters.IndexOf(mon);
+            if (mon != null)
+            {
+                int num = monsters.IndexOf(mon);
 
-            monsters.RemoveAt(num);
-            findPathAStars.RemoveAt(num);
-
+                monsters.RemoveAt(num);
+                findPathAStars.RemoveAt(num);
+            }
         }
     }
 }

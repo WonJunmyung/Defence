@@ -15,6 +15,7 @@ namespace Silly
         public float F;
         public GameObject marker;
         public PathMarker parent;
+        
 
         public PathMarker(MapData location, float g, float h, float f,/* GameObject marker,*/ PathMarker p)
         {
@@ -65,6 +66,9 @@ namespace Silly
         public List<Vector3> movePath = new List<Vector3>();
         public List<MapData> mapDatas = new List<MapData>();
         int reload = 0;
+        public bool isFind = true;
+        [SerializeField]
+        int searchCnt = 0;
         // Start is called before the first frame update
         void Start()
         {
@@ -105,6 +109,7 @@ namespace Silly
         public void BeginSearch(MapData startPos, MapData endPos)
         {
             done = false;
+            isFind = true;
             RemoveAllMarkers();
 
             open.Clear();
@@ -139,7 +144,14 @@ namespace Silly
 
         void Search(PathMarker thisNode)
         {
-            
+            searchCnt++;
+            if(searchCnt > 1000){
+                done = true;
+                isFind = false;
+                //Debug.Log("검색 횟수를 넘어섰습니다.");
+                searchCnt = 0;
+                return;
+            }
             if (thisNode.Equals(goalNode))
             {
                 done = true;
@@ -198,13 +210,16 @@ namespace Silly
             
             if(open.Count == 0)
             {
-                Debug.Log(this.gameObject.name);
+                isFind = false;
+                done = true;
+                searchCnt = 0;
+                //Debug.Log("경로를 검색할 수 없습니다.");
+                return;
             }
             
-            
             open = open.OrderBy(p => p.F).ToList<PathMarker>();
-            PathMarker pm = open.ElementAt(0);
 
+            PathMarker pm = open.ElementAt(0);
             closed.Add(pm);
             open.RemoveAt(0);
             
@@ -254,6 +269,11 @@ namespace Silly
 
         void SetMovePath()
         {
+            if (!isFind)
+            {
+                return;
+            }
+
             PathMarker begin = lastNode;
             while(!startNode.Equals(begin) && begin != null)
             {
@@ -318,7 +338,7 @@ namespace Silly
                 Search(lastNode);
             }
 
-            GetPath();
+            //GetPath();
 
             SetMovePath();
 

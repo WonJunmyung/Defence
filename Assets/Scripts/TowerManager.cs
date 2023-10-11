@@ -4,6 +4,16 @@ using UnityEngine;
 
 namespace Silly
 {
+    [SerializeField]
+    public enum TowerName
+    {
+        NormalTower = 0,  // 체력 : 50, 가격 : 10, 크기 : 1x1 , 사거리 : 10m, 타겟 : 1
+        MultiTower = 1, // 체력 : 100, 가격 : 30, 크기 : 2x2 , 사거리 : 5m, 타겟 : 5
+        FocusTower = 2, // 
+        Mirage = 3, //237,28,36
+        Obstacle = 4, //181,230,29
+    }
+
     public class TowerManager : MonoBehaviour
     {
         public GameObject[] Tower;
@@ -25,6 +35,28 @@ namespace Silly
              controlManager.currentTower = Instantiate(Tower[(int)towerName]);
         }
 
-        
+        public void BtnBuild(int buildNum)
+        {
+            switch ((TowerName)buildNum)
+            {
+                case TowerName.NormalTower:
+                    {
+                        CreateTower(TowerName.NormalTower);
+                        controlManager.buildingSize = 1;
+                    }
+                    break;
+                case TowerName.MultiTower:
+                    {
+                        CreateTower(TowerName.MultiTower);
+                        controlManager.buildingSize = 2;
+                    }
+                    break;
+                case TowerName.FocusTower:
+                    {
+
+                    }
+                    break;
+            }
+        }
     }
 }
