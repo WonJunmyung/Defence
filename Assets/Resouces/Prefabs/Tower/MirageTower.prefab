@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5745599629515502411}
   - component: {fileID: 9074612277537678305}
   m_Layer: 0
-  m_Name: MultiTower
+  m_Name: MirageTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b5be69dd2e1a514b8d69742bb40c940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerName: 1
+  towerName: 3
   hp: 50
   cost: 50
   attackSpeed: 1
@@ -53,9 +53,9 @@ MonoBehaviour:
   attackDamage: 10
   x: 0
   y: 0
-  bullect: {fileID: 71309762848860934, guid: 23e4450cd3afa69428cad545da1dd23f, type: 3}
+  bullect: {fileID: 71309762848860934, guid: 95fe76a31cf475b458c3e4ebf81e6bd1, type: 3}
   target: []
-  targetNum: 5
+  targetNum: 1
 --- !u!1 &3113343746879039119
 GameObject:
   m_ObjectHideFlags: 0
@@ -118,7 +118,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0d18ac998fe9bd44a91ee5356b7bb616, type: 2}
+  - {fileID: 2100000, guid: d0160e05f629fb04a881345813c6b7d7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

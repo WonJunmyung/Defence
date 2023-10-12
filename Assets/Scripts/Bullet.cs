@@ -10,6 +10,9 @@ namespace Silly
         public Transform Target;
         public Vector3 dir;
         public int AttackDamage = 10;
+
+        SphereCollider sphereCollider;
+
         // Start is called before the first frame update
         void Start()
         {

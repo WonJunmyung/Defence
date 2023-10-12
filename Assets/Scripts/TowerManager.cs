@@ -32,7 +32,8 @@ namespace Silly
 
         public void CreateTower(TowerName towerName)
         {
-             controlManager.currentTower = Instantiate(Tower[(int)towerName]);
+            controlManager.currentTower = Instantiate(Tower[(int)towerName]);
+            controlManager.towerName = towerName;
         }
 
         public void BtnBuild(int buildNum)
@@ -53,7 +54,20 @@ namespace Silly
                     break;
                 case TowerName.FocusTower:
                     {
-
+                        CreateTower(TowerName.FocusTower);
+                        controlManager.buildingSize = 1;
+                    }
+                    break;
+                case TowerName.Mirage:
+                    {
+                        CreateTower(TowerName.Mirage);
+                        controlManager.buildingSize = 2;
+                    }
+                    break;
+                case TowerName.Obstacle:
+                    {
+                        CreateTower(TowerName.Obstacle);
+                        controlManager.buildingSize = 2;
                     }
                     break;
             }

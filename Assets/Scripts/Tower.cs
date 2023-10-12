@@ -6,7 +6,9 @@ namespace Silly
 {
     public class Tower : MonoBehaviour
     {
+        public TowerName towerName;
         public int hp = 50;
+        public int cost = 50;
         public float attackSpeed = 1.0f;
         public float attackDistance = 10.0f;
         public int attackDamage = 10;
@@ -15,6 +17,7 @@ namespace Silly
 
         MonsterManager monsterManager;
         public GameObject bullect;
+        
         [SerializeField]
         private Transform[] target;
         public int targetNum = 5;
@@ -32,41 +35,55 @@ namespace Silly
         // Update is called once per frame
         void Update()
         {
-            time = time + 1.0f * Time.deltaTime;
-            if (time >= attackSpeed)
+            if (towerName <= TowerName.FocusTower)
             {
-                if (monsterManager.monsters.Count > 0)
+                time = time + 1.0f * Time.deltaTime;
+                if (time >= attackSpeed)
                 {
-                    
-                    int count = 0;
-                    for (int i = 0; i < monsterManager.monsters.Count; i++)
+                    if (monsterManager.monsters.Count > 0)
                     {
-                        float distance = Vector3.Distance(monsterManager.monsters[i].transform.position, this.transform.position);
-                        //Debug.Log(distance);
-                        if (distance < attackDistance)
+
+                        int count = 0;
+                        for (int i = 0; i < monsterManager.monsters.Count; i++)
                         {
-                            if (count < targetNum)
+                            float distance = Vector3.Distance(monsterManager.monsters[i].transform.position, this.transform.position);
+                            //Debug.Log(distance);
+                            if (distance < attackDistance)
                             {
-                                //Debug.Log("shoot");
-                                target[count] = monsterManager.monsters[i].transform;
-                                Shoot(target[count]);
+                                if (count < targetNum)
+                                {
+                                    //Debug.Log("shoot");
+                                    target[count] = monsterManager.monsters[i].transform;
+                                    Shoot(target[count]);
+                                }
+                                count++;
                             }
-                            count++;
                         }
                     }
+                    time = 0;
                 }
-                time = 0;
             }
         }
 
         void Shoot(Transform target)
         {
             Vector3 dir = (target.position - this.transform.position).normalized;
-            Debug.Log(dir);
-            Bullet temp = Instantiate(bullect, this.transform.position, Quaternion.LookRotation(dir)).GetComponent<Bullet>();
-            temp.Target = target;
-            temp.AttackDamage = attackDamage;
+            //Debug.Log(dir);
+            if (towerName < TowerName.FocusTower)
+            {
+                Bullet temp = Instantiate(bullect, this.transform.position, Quaternion.LookRotation(dir)).GetComponent<Bullet>();
+                temp.Target = target;
+                temp.AttackDamage = attackDamage;
+            }
+            else if(towerName == TowerName.FocusTower)
+            {
+                Bomb temp = Instantiate(bullect, this.transform.position, Quaternion.LookRotation(dir)).GetComponent<Bomb>();
+                temp.Target = target.position;
+                temp.AttackDamage = attackDamage;
+            }
 
         }
+
+        
     }
 }

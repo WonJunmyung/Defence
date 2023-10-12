@@ -30,6 +30,9 @@ namespace Silly
         public List<Monster> monsters = new List<Monster>();
         public List<MapData> responseMap = new List<MapData>();
         public List<MapData> destination = new List<MapData>();
+        public List<MapData> obstacle = new List<MapData>();
+        
+
         public List<FindPathAStar> findPathAStars = new List<FindPathAStar>();
         bool isMove = false;
 
@@ -86,31 +89,22 @@ namespace Silly
                         {
                             if (Vector3.Distance(monsters[i].transform.position, findPathAStars[i].movePath[0]) > 0.01f)
                             {
-                                bool moving = true;
-
-                                for (int j = 0; j < monsters.Count; j++)
-                                {
-                                    if (i != j)
-                                    {
-                                        if (Vector3.Distance(monsters[j].transform.position, findPathAStars[i].movePath[0]) < 1.0f)
-                                        {
-                                            moving = false;
-                                            
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (moving)
+                                if(FindPreMonster(i) && FindObstacle(i)) 
                                 {
                                     monsters[i].transform.position = Vector3.MoveTowards(monsters[i].transform.position,
-                                        findPathAStars[i].movePath[0], monsters[i].moveSpeed * Time.deltaTime);
+                                                   findPathAStars[i].movePath[0], monsters[i].moveSpeed * Time.deltaTime);
                                 }
-                                else
-                                {
-                                    MapData startMap = new MapData(monsters[i].x, monsters[i].z);
-                                    //int RandomNum = Random.Range(0, destination.Count);
-                                    //findPathAStars[i].GetPath(startMap, new MapData(destination[RandomNum].x, destination[RandomNum].z));
-                                }
+
+                                //{
+                                //    monsters[i].transform.position = Vector3.MoveTowards(monsters[i].transform.position,
+                                //        findPathAStars[i].movePath[0], monsters[i].moveSpeed * Time.deltaTime);
+                                //}
+                                //else
+                                //{
+                                //    //MapData startMap = new MapData(monsters[i].x, monsters[i].z);
+                                //    //int RandomNum = Random.Range(0, destination.Count);
+                                //    //findPathAStars[i].GetPath(startMap, new MapData(destination[RandomNum].x, destination[RandomNum].z));
+                                //}
                             }
                             else
                             {
@@ -133,9 +127,86 @@ namespace Silly
                         }
                     }
                 }
-                
-
             }
+        }
+
+
+        bool FindPreMonster(int i)
+        {
+            bool moving = true;
+
+            for (int j = 0; j < monsters.Count; j++)
+            {
+                if (i != j)
+                {
+                    if (Vector3.Distance(monsters[j].transform.position, findPathAStars[i].movePath[0]) < 1.0f)
+                    {
+                        moving = false;
+                        //foreach (MapData m in destination)
+                        //{
+                        //    Vector3 temp = new Vector3(m.x + 0.5f, monsters[i].transform.GetChild(0).position.y, m.z + 0.5f);
+                        //    if (Vector3.Distance(monsters[i].transform.position, temp) < 2.0f)
+                        //    {
+                        //        monsters[i].transform.GetChild(0).transform.LookAt(temp);
+
+                        //    }
+                        //}
+
+                        break;
+                    }
+                }
+            }
+            return moving;
+            //if (moving)
+            //{
+            //    monsters[i].transform.position = Vector3.MoveTowards(monsters[i].transform.position,
+            //        findPathAStars[i].movePath[0], monsters[i].moveSpeed * Time.deltaTime);
+            //}
+            //else
+            //{
+            //    //MapData startMap = new MapData(monsters[i].x, monsters[i].z);
+            //    //int RandomNum = Random.Range(0, destination.Count);
+            //    //findPathAStars[i].GetPath(startMap, new MapData(destination[RandomNum].x, destination[RandomNum].z));
+            //}
+        }
+
+        bool FindObstacle(int i)
+        {
+            bool moving = true;
+
+            for (int j = 0; j < obstacle.Count; j++)
+            {
+                if (i != j)
+                {
+                    if (Vector3.Distance(new Vector3(obstacle[j].x, findPathAStars[i].movePath[0].y, obstacle[j].z), findPathAStars[i].movePath[0]) < 1.0f)
+                    {
+                        moving = false;
+                        foreach (MapData m in destination)
+                        {
+                            Vector3 temp = new Vector3(m.x + 0.5f, monsters[i].transform.GetChild(0).position.y, m.z + 0.5f);
+                            if (Vector3.Distance(monsters[i].transform.position, temp) < 2.0f)
+                            {
+                                monsters[i].transform.GetChild(0).transform.LookAt(temp);
+
+                            }
+                        }
+
+                        break;
+                    }
+                }
+            }
+            return moving;
+            //if (moving)
+            //{
+            //    monsters[i].transform.position = Vector3.MoveTowards(monsters[i].transform.position,
+            //        findPathAStars[i].movePath[0], monsters[i].moveSpeed * Time.deltaTime);
+            //}
+            //else
+            //{
+            //    //MapData startMap = new MapData(monsters[i].x, monsters[i].z);
+            //    //int RandomNum = Random.Range(0, destination.Count);
+            //    //findPathAStars[i].GetPath(startMap, new MapData(destination[RandomNum].x, destination[RandomNum].z));
+            //}
         }
 
         public void BtnWave()
@@ -190,15 +261,16 @@ namespace Silly
             
         }
 
-        public void MonsterMoveReload()
+        public void MonsterMoveReload(MapData target)
         {
             //this.enabled = false;
             for (int i = 0; i < monsters.Count; i++)
             {
                 MapData startMap = new MapData(monsters[i].x, monsters[i].z);
                 //FindPathAStar temp = monsters[i].GetComponent<FindPathAStar>();
-                findPathAStars[i].GetPath(startMap, new MapData(destination[0].x, destination[0].z));
-                
+                //findPathAStars[i].GetPath(startMap, new MapData(destination[0].x, destination[0].z));
+                findPathAStars[i].GetPath(startMap, target);
+
                 //findPathAStars.Add(temp);
                 //findPathAStars.Add();
                 //findPathAStars[i].GetPath(startMap, destination[0]);
@@ -212,12 +284,19 @@ namespace Silly
             isMove = true;
         }
 
+        
+
         public void DestoryMonster(Monster mon)
         {
             if (mon != null)
             {
                 int num = monsters.IndexOf(mon);
-
+                //Debug.Log(monsters.Count);
+                //Debug.Log(num);
+                if (num < 0)
+                {
+                    return;
+                }
                 monsters.RemoveAt(num);
                 findPathAStars.RemoveAt(num);
             }

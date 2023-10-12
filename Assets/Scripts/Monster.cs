@@ -40,6 +40,16 @@ namespace Silly
                     Destroy(this.gameObject);
                 }
             }
+            if (other.name.Contains("Bomb"))
+            {
+                hp -= other.GetComponent<Bomb>().AttackDamage;
+                //Destroy(other.gameObject);
+                if (hp <= 0)
+                {
+                    monsterManager.DestoryMonster(this);
+                    Destroy(this.gameObject);
+                }
+            }
             
         }
 

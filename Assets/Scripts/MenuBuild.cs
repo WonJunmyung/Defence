@@ -5,9 +5,6 @@ using System;
 
 namespace Silly
 {
-    
-
-
     public class MenuBuild : MonoBehaviour
     {
         public TowerName TowerName;

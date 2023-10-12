@@ -78,23 +78,23 @@ namespace Silly
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                MapData startMapData = new MapData(0, 6);
-                MapData endMapData = new MapData(22, 6);
-                BeginSearch(startMapData, endMapData);
-            }
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                //while(!done)
-                {
-                    Search(lastNode);
-                }
-            }
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                GetPath();
-            }
+            //if (Input.GetKeyDown(KeyCode.S))
+            //{
+            //    MapData startMapData = new MapData(0, 6);
+            //    MapData endMapData = new MapData(22, 6);
+            //    BeginSearch(startMapData, endMapData);
+            //}
+            //if (Input.GetKeyDown(KeyCode.P))
+            //{
+            //    //while(!done)
+            //    {
+            //        Search(lastNode);
+            //    }
+            //}
+            //if (Input.GetKeyDown(KeyCode.M))
+            //{
+            //    GetPath();
+            //}
         }
 
         void RemoveAllMarkers()
